@@ -1,0 +1,10 @@
+<nav search_view="search" color="#93c4d3">
+  <view name="solar_output"  label="Overview" default="true"/>
+  <collection label="Splunk">
+	<view name="search"  label="Search"/>
+  	<view name="pivot" />
+ 	<view name="reports" />
+  	<view name="alerts" />
+  	<view name="dashboards" />
+  </collection>
+</nav>
