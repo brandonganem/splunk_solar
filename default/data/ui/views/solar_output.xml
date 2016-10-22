@@ -14,7 +14,7 @@
       <single>
         <title>Max Battery Voltage</title>
         <search>
-          <query>sourcetype="tristar:json" | stats max(vBattTerm.value) AS Volts</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | stats max(vBattTerm.value) AS Volts</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -39,7 +39,7 @@
       <single>
         <title>Min Battery Voltage</title>
         <search>
-          <query>sourcetype="tristar:json" | stats min(vBattTerm.value) AS Volts</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | stats min(vBattTerm.value) AS Volts</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -64,7 +64,7 @@
       <single>
         <title>Current Voltage</title>
         <search>
-          <query>sourcetype="tristar:json" | stats latest(vBattTerm.value) AS "Battery Voltage"</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | stats latest(vBattTerm.value) AS "Battery Voltage"</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -89,7 +89,7 @@
       <single>
         <title>Conversion Efficiency</title>
         <search>
-          <query>sourcetype="tristar:json" |rename array.watts AS solar_watts| eval efc = round(((out_power / solar_watts) * 100), 2)."%" | stats latest(efc) AS Efficiency</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') |rename array.watts AS solar_watts| eval efc = round(((out_power / solar_watts) * 100), 2)."%" | stats latest(efc) AS Efficiency</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -100,7 +100,7 @@
       <single>
         <title>Charge State</title>
         <search>
-          <query>sourcetype="tristar:json" | stats latest(state) AS state</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | stats latest(state) AS state</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -113,7 +113,7 @@
       <chart>
         <title>Voltage Over Time</title>
         <search>
-          <query>sourcetype="tristar:json" |timechart bins=600 avg(vPanel.value) AS "Panel Voltage", avg(vBattTerm.value) AS "Battery Voltage"</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') |timechart bins=600 avg(vPanel.value) AS "Panel Voltage", avg(vBattTerm.value) AS "Battery Voltage"</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -147,7 +147,7 @@
       <chart>
         <title>Amps over time</title>
         <search>
-          <query>sourcetype="tristar:json" |timechart bins=500 avg(aBatt.value) AS "Battery Amps", avg(aPanel.value) AS "Panel Amps"</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') |timechart bins=500 avg(aBatt.value) AS "Battery Amps", avg(aPanel.value) AS "Panel Amps"</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -182,7 +182,7 @@
       <chart>
         <title>Charge Input / Output</title>
         <search>
-          <query>sourcetype="tristar:json" | timechart bins=500 avg(battery_watts) AS "Battery Out Watts", avg(array.watts) AS "Solar In Watts"</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | timechart bins=500 avg(battery_watts) AS "Battery Out Watts", avg(array.watts) AS "Solar In Watts"</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
@@ -217,7 +217,7 @@
       <chart>
         <title>Temp</title>
         <search>
-          <query>sourcetype="tristar:json" | eval battTemp.value=('battTemp.value' * 1.8) + 32  |eval hsTemp.value=('hsTemp.value' * 1.8) + 32 | timechart bins=500 avg(battTemp.value) AS "Battery Temp", avg(hsTemp.value) AS "Heat Sink Temp"</query>
+          <query>sourcetype="tristar:json" |eval aBatt.value=if('aBatt.value' > 75,0,'aBatt.value'), battery_watts=if('battery_watts' > 1000, 0, 'battery_watts') | eval battTemp.value=('battTemp.value' * 1.8) + 32  |eval hsTemp.value=('hsTemp.value' * 1.8) + 32 | timechart bins=500 avg(battTemp.value) AS "Battery Temp", avg(hsTemp.value) AS "Heat Sink Temp"</query>
           <earliest>$time.earliest$</earliest>
           <latest>$time.latest$</latest>
         </search>
